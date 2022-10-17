@@ -6,4 +6,4 @@ pep8
 httmock
 wooper
 
--e git+git://github.com/superdesk/superdesk-planning.git@v2.3.1#egg=superdesk-planning
+git+https://github.com/superdesk/superdesk-planning.git@v2.4.0#egg=superdesk-planning
