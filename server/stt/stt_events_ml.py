@@ -392,8 +392,11 @@ class STTEventsMLParser(EventsMLParser):
 
 
 register_feed_parser(STTEventsMLParser.NAME, STTEventsMLParser())
+
+
 class STTEventsMLParserNext(STTEventsMLParser):
     NAME = "stteventsmlnext"
     label = "STT Events ML Next"
+
 
 register_feed_parser(STTEventsMLParserNext.NAME, STTEventsMLParserNext())

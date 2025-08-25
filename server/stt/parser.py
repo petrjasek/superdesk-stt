@@ -178,8 +178,11 @@ class STTParser(STTNewsMLFeedParser):
 
 
 register_feed_parser(STTParser.NAME, STTParser())
+
+
 class STTParserNext(STTParser):
     NAME = "sttnewsmlnewsroomnext"
     label = "STT NewsML for Newsroom Next"
+
 
 register_feed_parser(STTParserNext.NAME, STTParserNext())
