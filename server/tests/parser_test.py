@@ -57,3 +57,11 @@ class STTParsePRETestCase(TestCase):
     def test_replace_pre_with_p(self):
         body_html = self.item["body_html"]
         self.assertIn("<p>It used to be a pre</p>", body_html)
+
+
+class STTParseNextTestCase(STTParseTestCase):
+    fixture = "stt_newsml_location_test.xml"
+    parser_name = "sttnewsmlnewsroomnext"
+
+    def test_parser(self):
+        self.assertIn({"name": "Test", "qcode": "9"}, self.item["anpa_category"])

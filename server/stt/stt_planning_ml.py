@@ -307,3 +307,9 @@ class STTPlanningMLParser(PlanningMLParser):
 
 stt_planning_ml_parser = STTPlanningMLParser()
 register_feed_parser(STTPlanningMLParser.NAME, stt_planning_ml_parser)
+class STTPlanningMLParserNext(STTPlanningMLParser):
+    NAME = "sttplanningmlnext"
+    label = "STT Planning ML Next"
+
+stt_planning_ml_parser_next = STTPlanningMLParserNext()
+register_feed_parser(STTPlanningMLParserNext.NAME, stt_planning_ml_parser_next)
