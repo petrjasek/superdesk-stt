@@ -196,3 +196,22 @@ class STTParserNextMixin:
             else:
                 item["language"] = "fi"
         return items
+
+    def get_topics_lookup(self):
+        topics = get_resource_service("vocabularies").get_items("topics")
+        return {t["iptc_subject"]: t for t in topics if t.get("iptc_subject")}
+
+    def set_extra_fields(self, item, xml):
+        super().set_extra_fields(item, xml)
+
+        topics_lookup = self.get_topics_lookup
+
+        for subject in xml.find(self.qname("contentMeta")).findall(
+            self.qname("subject")
+        ):
+            qcode = subject.attrib.get("qcode", "")
+            if qcode.startswith("sttsubj:"):
+                code = qcode.split(":")[1]
+                topic = topics_lookup().get(code)
+                if topic:
+                    item.setdefault("subject", []).append(topic)

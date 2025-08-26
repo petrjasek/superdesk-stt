@@ -244,8 +244,16 @@ class STTEventsMLParserContactInfoTest(TestCase):
 class STTEventsMLParserNextTestCase(TestCase):
     fixture = "events_ml_259431.xml"
     parser_class = STTEventsMLParserNext
+    add_stt_cvs = True
 
     def test_department(self):
         category = self.item["anpa_category"][0]
         self.assertEqual("9", category["qcode"])
         self.assertEqual("Politiikka", category["name"])
+
+    def test_mediatopics(self):
+        mediatopics = [s for s in self.item["subject"] if s.get("scheme") == "topics"]
+        assert mediatopics
+        assert mediatopics[0]["name"] == "Politiikka"
+        assert mediatopics[0]["qcode"] == "11000000"
+        assert mediatopics[0]["wikidata"] == "Q7163"

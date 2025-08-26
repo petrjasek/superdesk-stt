@@ -63,6 +63,7 @@ class STTParsePRETestCase(TestCase):
 class STTParseNextTestCase(STTParseTestCase):
     fixture = "stt_newsml_location_test.xml"
     parser_class = STTParserNext
+    add_stt_cvs = True
 
     def test_department(self):
         category = self.item["anpa_category"][0]
@@ -71,6 +72,13 @@ class STTParseNextTestCase(STTParseTestCase):
 
     def test_language(self):
         self.assertEqual("fi", self.item["language"])
+
+    def test_mediatopics(self):
+        mediatopics = [s for s in self.item["subject"] if s.get("scheme") == "topics"]
+        assert mediatopics
+        assert mediatopics[0]["name"] == "Politiikka"
+        assert mediatopics[0]["qcode"] == "11000000"
+        assert mediatopics[0]["wikidata"] == "Q7163"
 
 
 class STTParseNextEnglishTestCase(TestCase):
