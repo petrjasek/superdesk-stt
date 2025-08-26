@@ -12,6 +12,7 @@ from superdesk.errors import SuperdeskApiError
 from planning.feed_parsers.events_ml import EventsMLParser
 
 from .common import (
+    STTParserNextMixin,
     planning_xml_contains_remove_signal,
     unpost_or_spike_event_or_planning,
     remove_date_portion_from_id,
@@ -394,7 +395,7 @@ class STTEventsMLParser(EventsMLParser):
 register_feed_parser(STTEventsMLParser.NAME, STTEventsMLParser())
 
 
-class STTEventsMLParserNext(STTEventsMLParser):
+class STTEventsMLParserNext(STTParserNextMixin, STTEventsMLParser):
     NAME = "stteventsmlnext"
     label = "STT Events ML Next"
 

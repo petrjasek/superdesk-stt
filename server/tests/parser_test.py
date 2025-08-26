@@ -1,3 +1,4 @@
+from stt.parser import STTParserNext
 from tests import TestCase
 
 
@@ -61,7 +62,9 @@ class STTParsePRETestCase(TestCase):
 
 class STTParseNextTestCase(STTParseTestCase):
     fixture = "stt_newsml_location_test.xml"
-    parser_name = "sttnewsmlnewsroomnext"
+    parser_class = STTParserNext
 
-    def test_parser(self):
-        self.assertIn({"name": "Test", "qcode": "9"}, self.item["anpa_category"])
+    def test_department(self):
+        category = self.item["anpa_category"][0]
+        self.assertEqual("9", category["qcode"])
+        self.assertEqual("Politiikka", category["name"])

@@ -1,6 +1,10 @@
 from tests import TestCase
 from superdesk import get_resource_service
-from stt.stt_events_ml import STTEventsMLParser, search_existing_contacts
+from stt.stt_events_ml import (
+    STTEventsMLParser,
+    STTEventsMLParserNext,
+    search_existing_contacts,
+)
 
 
 class STTEventsMLParserTest(TestCase):
@@ -235,3 +239,13 @@ class STTEventsMLParserContactInfoTest(TestCase):
         )
         self.assertIn("qcode", location)
         self.assertEqual(location["qcode"], guid)
+
+
+class STTEventsMLParserNextTestCase(TestCase):
+    fixture = "events_ml_259431.xml"
+    parser_class = STTEventsMLParserNext
+
+    def test_department(self):
+        category = self.item["anpa_category"][0]
+        self.assertEqual("9", category["qcode"])
+        self.assertEqual("Politiikka", category["name"])

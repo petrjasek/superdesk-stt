@@ -2,7 +2,7 @@ from superdesk import etree as sd_etree
 from superdesk.io.registry import register_feed_parser
 from superdesk.io.feed_parsers.stt_newsml import STTNewsMLFeedParser, STT_LOCATION_MAP
 
-from .common import remove_date_portion_from_id
+from .common import STTParserNextMixin, remove_date_portion_from_id
 
 
 NA = "N/A"
@@ -180,7 +180,7 @@ class STTParser(STTNewsMLFeedParser):
 register_feed_parser(STTParser.NAME, STTParser())
 
 
-class STTParserNext(STTParser):
+class STTParserNext(STTParserNextMixin, STTParser):
     NAME = "sttnewsmlnewsroomnext"
     label = "STT NewsML for Newsroom Next"
 
