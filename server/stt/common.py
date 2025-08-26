@@ -183,7 +183,6 @@ def is_online_version(item: Item) -> bool:
 class STTParserNextMixin:
     def parse(self, xml, provider=None):
         items = super().parse(xml, provider)
-        print("IN")
         for item in items:
             department = [
                 s for s in item.get("subject", []) if s.get("scheme") == "sttdepartment"
@@ -192,4 +191,8 @@ class STTParserNextMixin:
                 item["anpa_category"] = [
                     {"name": d["name"], "qcode": d["qcode"]} for d in department
                 ]
+            if item.get("headline") and "TRANSLATED" in item["headline"]:
+                item["language"] = "en"
+            else:
+                item["language"] = "fi"
         return items

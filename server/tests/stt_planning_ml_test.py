@@ -1,6 +1,6 @@
 from unittest import mock
 from tests import TestCase
-from stt.stt_planning_ml import STTPlanningMLParser
+from stt.stt_planning_ml import STTPlanningMLParser, STTPlanningMLParserNext
 from datetime import datetime, timedelta
 from dateutil.tz import tzoffset, tzutc
 from superdesk.tests import TestCase as CoreTestCase
@@ -259,3 +259,17 @@ class STTPlanningMLParserPlaceholderTests(CoreTestCase):
         self.assertFalse(is_placeholder_coverage(updates["coverages"][1]))
         self.assertEqual(updates["coverages"][0]["coverage_id"], "pic_cov_1")
         self.assertEqual(updates["coverages"][1]["coverage_id"], "text_cov_1")
+
+
+class STTPlanningMLParserNextTest(TestCase):
+    fixture = "planning_ml_584717.xml"
+    parser_class = STTPlanningMLParserNext
+    add_stt_cvs = True
+
+    def test_department(self):
+        category = self.item["anpa_category"][0]
+        self.assertEqual("9", category["qcode"])
+        self.assertEqual("Politiikka", category["name"])
+
+    def test_priority(self):
+        self.assertEqual(3, self.item["priority"])

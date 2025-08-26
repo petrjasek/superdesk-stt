@@ -68,3 +68,14 @@ class STTParseNextTestCase(STTParseTestCase):
         category = self.item["anpa_category"][0]
         self.assertEqual("9", category["qcode"])
         self.assertEqual("Politiikka", category["name"])
+
+    def test_language(self):
+        self.assertEqual("fi", self.item["language"])
+
+
+class STTParseNextEnglishTestCase(TestCase):
+    fixture = "stt_newsml_link_content_2.xml"
+    parser_class = STTParserNext
+
+    def test_language(self):
+        self.assertEqual("en", self.item["language"])

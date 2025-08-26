@@ -15,6 +15,7 @@ from planning.feed_parsers.superdesk_planning_xml import PlanningMLParser
 from planning.common import get_coverage_from_planning
 
 from .common import (
+    STTParserNextMixin,
     planning_xml_contains_remove_signal,
     unpost_or_spike_event_or_planning,
     remove_date_portion_from_id,
@@ -309,9 +310,17 @@ stt_planning_ml_parser = STTPlanningMLParser()
 register_feed_parser(STTPlanningMLParser.NAME, stt_planning_ml_parser)
 
 
-class STTPlanningMLParserNext(STTPlanningMLParser):
+class STTPlanningMLParserNext(STTParserNextMixin, STTPlanningMLParser):
     NAME = "sttplanningmlnext"
     label = "STT Planning ML Next"
+
+    def set_urgency(self, content_meta, item):
+        urgency_elt = content_meta.find(self.qname("urgency"))
+        if urgency_elt is not None and urgency_elt.text:
+            try:
+                item["priority"] = int(urgency_elt.text)
+            except ValueError:
+                pass
 
 
 stt_planning_ml_parser_next = STTPlanningMLParserNext()
