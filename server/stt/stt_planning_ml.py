@@ -145,6 +145,13 @@ class STTPlanningMLParser(STTParserMixin, PlanningMLParser):
         if coverage is not None:
             # Parse STT-specific fields for all coverages
             self.parse_stt_coverage_fields(news_coverage_elt, coverage)
+
+            if coverage["planning"].get("slugline") and not coverage["planning"].get(
+                "headline"
+            ):
+                coverage["planning"]["headline"] = coverage["planning"]["slugline"]
+            coverage["planning"]["slugline"] = item.get("name", "")
+
         return coverage
 
     def parse_stt_coverage_fields(
@@ -159,6 +166,7 @@ class STTPlanningMLParser(STTParserMixin, PlanningMLParser):
         coverage.setdefault("planning", {})
         coverage["planning"].setdefault("fields", [])
         coverage["planning"].setdefault("subject", [])
+        coverage["planning"]["multiple_content"] = True
 
         # Parse all fields efficiently in single iterations
         self.parse_all_subject_fields(planning_elt, coverage)
@@ -551,11 +559,12 @@ class STTPlanningMLParser(STTParserMixin, PlanningMLParser):
                 "workflow_status": "draft",
                 "firstcreated": item.get("firstcreated"),
                 "planning": {
-                    "slugline": "",
+                    "slugline": item.get("name", ""),
                     "g2_content_type": "text",
                     "scheduled": item.get("planning_date"),
                     "fields": [],
                     "subject": [],
+                    "multiple_content": True,
                 },
                 "flags": {"placeholder": True},
             }

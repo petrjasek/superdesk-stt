@@ -33,6 +33,12 @@ class STTPlanningMLParserTest(TestCase):
             self.item["coverages"][0]["coverage_id"], "ID_WORKREQUEST_159799"
         )
 
+        # test coverage metadata
+        for coverage in self.item["coverages"]:
+            print("C", coverage)
+            self.assertTrue(coverage["planning"]["multiple_content"])
+            self.assertEqual(coverage["planning"]["slugline"], self.item["name"])
+
     def test_department(self):
         category = self.item["anpa_category"][0]
         self.assertEqual("9", category["qcode"])
@@ -91,7 +97,7 @@ class STTPlanningMLParserTest(TestCase):
         self.assertEqual(coverage["flags"], {"placeholder": True})
 
         planning = coverage["planning"]
-        self.assertEqual(planning["slugline"], "")
+        self.assertEqual(planning["slugline"], self.item["name"])
         self.assertEqual(planning["g2_content_type"], "text")
         self.assertEqual(
             planning["scheduled"], datetime(2023, 5, 29, 0, 0, tzinfo=tzutc())
@@ -123,7 +129,7 @@ class STTPlanningMLParserTest(TestCase):
         )
 
         planning = coverage["planning"]
-        self.assertEqual(planning["slugline"], "Sudanissa taistelut jatkuvat")
+        self.assertEqual(planning["headline"], "Sudanissa taistelut jatkuvat")
         self.assertEqual(planning["g2_content_type"], "text")
         self.assertEqual(
             planning["scheduled"],
