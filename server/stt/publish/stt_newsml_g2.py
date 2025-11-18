@@ -440,18 +440,11 @@ class STTNewsmLG2Formatter(NewsMLG2Formatter):
 
         # Public edNote - to all other profiles but 'nettiuutinen'
         if article.get("profile") != "nettiuutinen":
-
-            extra = article.get("extra", {})
-
-            if extra:
-                if "sttpublicednote" in extra:
-                    # For some reason data is inside P tag
-                    parser = etree.XMLParser()
-                    if extra.get("sttpublicednote", None):
-                        element = etree.XML(extra.get("sttpublicednote", ""), parser)
-                        SubElement(
-                            itemMeta, "edNote", attrib={"role": "sttnote:public"}
-                        ).text = element.text
+            public_ednote = self.get_public_ednote(article)
+            if public_ednote:
+                SubElement(
+                    itemMeta, "edNote", attrib={"role": "sttnote:public"}
+                ).text = public_ednote
 
         # Signals
         self.format_signal(article, itemMeta)
@@ -590,26 +583,29 @@ class STTNewsmLG2Formatter(NewsMLG2Formatter):
 
             # If the profile is 'nettiuutinen' add public ednote to the end of body
             if article.get("profile") == "nettiuutinen":
-                extra = article.get("extra", {})
-
-                if extra:
-                    if "sttpublicednote" in extra:
-                        # For some reason data is inside P tag
-                        parser = etree.XMLParser()
-                        if extra.get("sttpublicednote", None):
-                            element = etree.XML(
-                                extra.get("sttpublicednote", ""), parser
-                            )
-
-                            p = html.Element("p")
-                            p.text = element.text
-                            body.append(p)
+                public_ednote = self.get_public_ednote(article)
+                if public_ednote:
+                    p = html.Element("p")
+                    p.text = public_ednote
+                    body.append(p)
 
         # If we don't have body, check if the profile is 'viiva'.
         else:
             # If viiva generate new body content with same content as headline
             if article.get("profile", "") == "viiva":
                 SubElement(body, "p").text = article.get("headline", "")
+
+    def get_public_ednote(self, article) -> str:
+        extra = article.get("extra", {})
+        if extra and extra.get("sttpublicednote"):
+            # For some reason data is inside P tag
+            try:
+                parser = etree.XMLParser()
+                element = etree.XML(extra.get("sttpublicednote", ""), parser)
+                return element.text
+            except etree.XMLSyntaxError:
+                return extra.get("sttpublicednote", "")
+        return ""
 
     def can_format(self, format_type, article):
         """Method check if the article can be formatted to NewsML G2 or not.
@@ -702,6 +698,4 @@ class STTNewsmLG2Formatter(NewsMLG2Formatter):
             ]
 
         except Exception as ex:
-            raise await FormatterError.newsmlG2FormatterError(
-                ex, subscriber
-            ).send_notifications()
+            raise FormatterError.newmsmlG2FormatterError(ex, subscriber)
