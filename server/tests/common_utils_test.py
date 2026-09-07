@@ -66,5 +66,11 @@ class CommonUtilsTest(TestCase):
         incoming.pop("qcode")
         self.assertFalse(location_has_changes(existing, incoming))
 
+        incoming["timezone"] = "Europe/Prague"
+        self.assertTrue(location_has_changes(existing, incoming))
+
+        incoming.pop("timezone")
+        self.assertFalse(location_has_changes(existing, incoming))
+
         incoming["name"] = "Ostrava Center"
         self.assertTrue(location_has_changes(existing, incoming))
