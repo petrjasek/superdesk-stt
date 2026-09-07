@@ -23,13 +23,16 @@ def location_has_changes(existing: Dict[str, Any], incoming: Dict[str, Any]) -> 
     """Return True when the incoming location differs from the stored one.
 
     Missing keys in the incoming payload are treated as no change, so sparse
-    updates do not trigger a needless write when only metadata like ``qcode`` is
-    added by the upsert layer itself.
+    updates do not trigger a needless write when only metadata like ``qcode``
+    is added by the upsert layer itself. Keys present only in the incoming
+    payload are treated as changes. The upsert layer handles metadata like
+    ``qcode`` separately before calling this helper.
+
     """
 
     for key, incoming_value in incoming.items():
         if key not in existing:
-            continue
+            return True
 
         existing_value = existing[key]
         if isinstance(existing_value, dict) and isinstance(incoming_value, dict):
@@ -64,7 +67,11 @@ async def upsert_location(
 
     if existing_location:
         updated_location = {**existing_location, **location}
-        if location_has_changes(existing_location, updated_location):
+        comparison_location = {
+            **updated_location,
+            "qcode": existing_location.get("qcode", custom_guid),
+        }
+        if location_has_changes(existing_location, comparison_location):
             await locations_service.update_async(
                 existing_location["_id"], updated_location, existing_location
             )

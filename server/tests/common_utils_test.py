@@ -61,6 +61,9 @@ class CommonUtilsTest(TestCase):
             "qcode": "urn:stt:location:6065",
         }
 
+        self.assertTrue(location_has_changes(existing, incoming))
+
+        incoming.pop("qcode")
         self.assertFalse(location_has_changes(existing, incoming))
 
         incoming["name"] = "Ostrava Center"
